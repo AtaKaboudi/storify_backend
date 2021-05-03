@@ -75,10 +75,46 @@ function deleteList(params,callback){
         callback(err,resu);
     }) 
 }
+function queryItemsUserId(user_id,callback){
+    db.query('SELECT * FROM '+ process.env.DATABASE_ITEMS_TABLE+ ' WHERE user_id = ? ', [user_id] ,(err,resu)=>{
+        callback(err,resu);
+    }) 
+}
+function insertItem (params,callback){
+    let itemObject =  {      
+        name : params.name ,
+        user_id : params.id,
+        image : params.image,
+        note : params.note,
+        category_id : params.category_id,
+        created_at : getCurrentDate(),
+        updated_at : getCurrentDate()                     
+}
+    db.query('INSERT into '+process.env.DATABASE_ITEMS_TABLE+' SET ?',[itemObject], (err,resu)=>{
+        callback(err,itemObject);
+    })
+}
+
+function modifyItem(params, callback){
+        db.query('UPDATE '+ process.env.DATABASE_ITEMS_TABLE+ ' SET name = ? , image = ? , category_id = ? , note = ? , updated_at = ? WHERE id = ?  ', [params.name,params.image,params.category_id,params.note,getCurrentDate(), params.item_id], (err,resu)=>{
+            console.log(err);
+            callback(err,resy);
+        })  
+}
+
+function queryCategories(user_id,callback){
+    db.query('SELECT * FROM '+ process.env.DATABASE_CATEGORIES_TABLE+ ' WHERE user_id = ? ', [user_id] ,(err,resu)=>{
+        callback(err,resu);
+    }) 
+}
 
 module.exports ={
-    deleteList,
-modifyList,
+queryCategories,
+modifyItem,
+ insertItem,
+ queryItemsUserId,
+ deleteList,
+ modifyList,
  queryUserEmail,
  insertUser,
  queryUserId,
