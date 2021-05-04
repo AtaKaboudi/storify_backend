@@ -14,9 +14,9 @@ app.use(express.json());
 
 //Define Routes 
 app.use('/auth',require('./routes/auth.js'));
-app.use('/lists',require('./routes/lists.js'));
-app.use('/items',require('./routes/items.js'));
-app.use('/categories',require('./routes/categories.js'));
+app.use('/lists',authController.authentificateToken,require('./routes/lists.js'));
+app.use('/items',authController.authentificateToken,require('./routes/items.js'));
+app.use('/categories',authController.authentificateToken,require('./routes/categories.js'));
 
 
 

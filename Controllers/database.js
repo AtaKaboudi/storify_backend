@@ -97,8 +97,7 @@ function insertItem (params,callback){
 
 function modifyItem(params, callback){
         db.query('UPDATE '+ process.env.DATABASE_ITEMS_TABLE+ ' SET name = ? , image = ? , category_id = ? , note = ? , updated_at = ? WHERE id = ?  ', [params.name,params.image,params.category_id,params.note,getCurrentDate(), params.item_id], (err,resu)=>{
-            console.log(err);
-            callback(err,resy);
+            callback(err,resu);
         })  
 }
 
@@ -108,7 +107,64 @@ function queryCategories(user_id,callback){
     }) 
 }
 
+function insertCategory(params,callback){
+    let categoryObject = {
+        name : params.name ,
+        user_id : params.id,
+        created_at : getCurrentDate(),
+        updated_at : getCurrentDate()
+    }
+    db.query('INSERT into '+process.env.DATABASE_CATEGORIES_TABLE+' SET ?',[categoryObject], (err,resu)=>{
+        callback(err,categoryObject);
+    })
+
+}
+
+function updateCategory(params,callback){
+    db.query('UPDATE '+ process.env.DATABASE_CATEGORIES_TABLE+ ' SET name = ? ,  updated_at = ?  WHERE id = ?  ', [params.name, getCurrentDate(),params.category_id], (err,resu)=>{
+        callback(err,resu);
+    })  
+}
+
+function deleteCategory(category_id,callback){
+    db.query('DELETE FROM '+ process.env.DATABASE_CATEGORIES_TABLE+ ' WHERE id = ? ', [category_id,], (err,resu)=>{
+        callback(err,resu);
+    }) 
+}
+
+
+function queryItemsByForeignKeys(params,callback){
+    db.query('SELECT * FROM '+ process.env.DATABASE_ITEMS_TABLE+ ' WHERE user_id = ? AND list_id = ? ', [params.id, params.list_id] ,(err,resu)=>{
+        callback(err,resu);
+    }) 
+}
+
+
+function modifyItemsByList(params,callback){
+    db.query('UPDATE '+ process.env.DATABASE_ITEMS_TABLE+ ' SET list_id = ?  WHERE id = ?  ', [params.list_id,params.item_id], (err,resu)=>{
+        callback(err,resu);
+    })  
+}
+
+function updateFullItem (params,callback){
+    db.query('UPDATE '+ process.env.DATABASE_ITEMS_TABLE+ ' SET list_id = ? , name = ? , image = ? , category_id = ? , note = ? , updated_at = ?  WHERE id = ?  ', [params.list_id,params.name,params.image,params.category_id,params.note,getCurrentDate(),params.item_id], (err,resu)=>{
+        callback(err,resu);
+    }) 
+}
+function deleteItem(item_id,callback){
+    db.query('DELETE FROM '+ process.env.DATABASE_ITEMS_TABLE+ ' WHERE id = ? ', [item_id], (err,resu)=>{
+        callback(err,resu);
+     }) 
+}
+
 module.exports ={
+    deleteItem,
+    updateFullItem,
+    modifyItemsByList,
+    queryItemsByForeignKeys,
+    deleteCategory,
+updateCategory,
+insertCategory,
 queryCategories,
 modifyItem,
  insertItem,

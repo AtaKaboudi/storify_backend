@@ -70,8 +70,7 @@ router.post('/login',[check('email').isEmail()], async (req,res)=>{
         })
 })
 
-router.get ('/getUser', async (req,res)=>{
-   await authController.authentificateToken(req,res);
+router.get ('/getUser',authController.authentificateToken, async (req,res)=>{
     await db.queryUserId(req.body.id, (err,resu)=>{
         if(err) return res.status(500).json({"status": "error", "message": err.code})
         res.send(resu);
